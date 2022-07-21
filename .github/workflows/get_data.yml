@@ -27,4 +27,4 @@ jobs:
          git config --local user.name "GitHub Action"
          git add .
          git diff-index --quiet HEAD || git commit -m "OxCGRT Data Update" -a
-         git push origin master:master
+         git push origin main:main
