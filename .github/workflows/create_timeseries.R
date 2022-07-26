@@ -14,11 +14,9 @@ library(rgeos)
 library(janitor)
 
 # Import source data --------------------------------------------------------------
-oxcgrtdata <- read_csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv", 
+oxcgrtdata <- read_csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker-legacy/main/legacy_data_202207/OxCGRT_latest.csv", 
                        col_types = cols(RegionName = col_character(), 
                                         RegionCode = col_character()))
-
-oxcgrtUS <- oxcgrtdata[oxcgrtdata$CountryCode == "USA" & !is.na(oxcgrtdata$RegionName),]
 
 #oxcgrtdata <- oxcgrtdata %>% filter(is.na(RegionName))
 
@@ -29,14 +27,6 @@ oxcgrtdata <-
   filter(Date != Sys.Date()) %>%
   group_by(CountryCode) %>%
   arrange(CountryCode, Date) %>%
-  fill(ConfirmedCases, GovernmentResponseIndex, .direction = "down")
-
-oxcgrtUS <- 
-  oxcgrtUS %>% 
-  mutate(Date = ymd(Date)) %>%
-  filter(Date != Sys.Date()) %>%
-  group_by(RegionCode) %>%
-  arrange(RegionCode, Date) %>%
   fill(ConfirmedCases, GovernmentResponseIndex, .direction = "down")
 
 # get a time series for each index and indicator ------------------------------------- 
@@ -88,10 +78,10 @@ timeseries <- function(i){
   #temp <- 
   #  temp %>%
   #  mutate()
-  write.csv(temp, file = paste0("./data/timeseries/", i, ".csv"))
+  write.csv(temp, file = paste0("./legacy_data_202207/timeseries/", i, ".csv"))
 }
 
 lapply(tslist, timeseries)
 
 ## publish timeseries worksheet
-saveWorkbook(ts_sheet, file = "./data/timeseries/OxCGRT_timeseries_all.xlsx", overwrite = T)
+saveWorkbook(ts_sheet, file = "./legacy_data_202207/timeseries/OxCGRT_timeseries_all.xlsx", overwrite = T)
